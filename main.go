@@ -4,25 +4,12 @@ import (
     "fmt"
     "net"
     "os"
+    "os/exec"
     "strings"
     "remote/httpd"
 )
 
 func main(){
-    /*comd := "loginctl"   
-    arg1 := "lock-session"
-
-    cmd := exec.Command(comd,arg1)
-
-    stdout, stderr := cmd.Output()
-
-    if stderr != nil {
-        fmt.Println(stderr)   
-        return
-    }
-
-    fmt.Println(string(stdout))*/
-
     sock, err := net.Listen("tcp","0.0.0.0:8080")
 
     if err!=nil {
@@ -64,7 +51,19 @@ func shutdown(){
 }
 
 func lock(){
-    fmt.Println("Lock")  
+    fmt.Println("Locking session ...")  
+    comd := "loginctl"   
+    arg1 := "lock-session"
+
+    cmd := exec.Command(comd,arg1)
+
+    _, stderr := cmd.Output()
+
+    if stderr != nil {
+        fmt.Println(stderr)   
+        return
+    }
+
 }
 
 func url(corps httpd.Httpp){
