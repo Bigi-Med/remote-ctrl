@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"net"
-	"os"
-	"strings"
+    "fmt"
+    "net"
+    "os"
+    "strings"
     "remote/httpd"
 )
 
@@ -17,8 +17,8 @@ func main(){
     stdout, stderr := cmd.Output()
 
     if stderr != nil {
-     fmt.Println(stderr)   
-     return
+        fmt.Println(stderr)   
+        return
     }
 
     fmt.Println(string(stdout))*/
@@ -44,7 +44,7 @@ func main(){
     }
 
 }
- func router(corps httpd.Httpp){
+func router(corps httpd.Httpp){
     switch corps.Path{
     case "/shutdown":
         shutdown()
@@ -57,58 +57,59 @@ func main(){
     default:
         fmt.Println("How did u get here")
     }
- }
+}
 
- func shutdown(){
-  fmt.Println("Shutdown")  
- }
+func shutdown(){
+    fmt.Println("Shutdown")  
+}
 
- func lock(){
-  fmt.Println("Lock")  
- }
+func lock(){
+    fmt.Println("Lock")  
+}
 
- func url(corps httpd.Httpp){
-  fmt.Println("Url")  
-  fmt.Println("Body")
- }
+func url(corps httpd.Httpp){
+    fmt.Println("Url")  
+    fmt.Println("Body")
+}
 
- func health(){
-  fmt.Println("Health")  
- }
+func health(){
+    fmt.Println("Health")  
+}
 
- func parser(conn net.Conn){
+func parser(conn net.Conn){
     data := make([]byte,1024)
     conn.Read(data)
     dataStr := string(data)
+    fmt.Println(dataStr)
     requestLine := strings.Split(dataStr," ")
     path := requestLine[1]
     switch path{
         case "/shutdown":   
-            corps := httpd.Httpp{
-                Path: "/shutdown",
-                Body: "",
-            }
-            router(corps)
-        case "/lock":
-            corps := httpd.Httpp{
-                Path: "/lock",
-                Body: "",
-            }
-            router(corps)
-        case "/url":
-            corps := httpd.Httpp{
-                Path: "/url",
-                Body: "",
-            }
-            router(corps)
-        case "/health":
-            corps := httpd.Httpp{
-                Path: "/health",
-                Body: "",
-            }
-            router(corps)
-        default:
-            fmt.Println("tf u going?")
+        corps := httpd.Httpp{
+            Path: "/shutdown",
+            Body: "",
+        }
+        router(corps)
+    case "/lock":
+        corps := httpd.Httpp{
+            Path: "/lock",
+            Body: "",
+        }
+        router(corps)
+    case "/url":
+        corps := httpd.Httpp{
+            Path: "/url",
+            Body: "",
+        }
+        router(corps)
+    case "/health":
+        corps := httpd.Httpp{
+            Path: "/health",
+            Body: "",
+        }
+        router(corps)
+    default:
+        fmt.Println("tf u going?")
 
     }
 
