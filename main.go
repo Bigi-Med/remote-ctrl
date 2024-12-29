@@ -69,7 +69,7 @@ func lock(){
 
 func url(corps httpd.Httpp){
     fmt.Println("Url")  
-    fmt.Println("Body")
+    fmt.Println(corps.Body)
 }
 
 func health(){
@@ -78,10 +78,16 @@ func health(){
 
 func parser(conn net.Conn){
     data := make([]byte,1024)
+    var body string ;
     conn.Read(data)
     dataStr := string(data)
-    fmt.Println(dataStr)
-    requestLine := strings.Split(dataStr," ")
+    slotedData := strings.Split(dataStr,"\r\n")
+    for i := 0 ; i<len(slotedData); i++{
+        if strings.TrimSpace(slotedData[i]) == ""{
+            body = slotedData[i+1]
+        }
+    }
+    requestLine := strings.Split(slotedData[0]," ")
     path := requestLine[1]
     switch path{
         case "/shutdown":   
@@ -93,13 +99,13 @@ func parser(conn net.Conn){
     case "/lock":
         corps := httpd.Httpp{
             Path: "/lock",
-            Body: "",
+            Body: body,
         }
         router(corps)
     case "/url":
         corps := httpd.Httpp{
             Path: "/url",
-            Body: "",
+            Body: body,
         }
         router(corps)
     case "/health":
