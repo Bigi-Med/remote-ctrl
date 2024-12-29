@@ -5,7 +5,7 @@ import (
 	"net"
 	"os"
 	"strings"
-	//"remote"
+    "remote/httpd"
 )
 
 func main(){
@@ -44,8 +44,36 @@ func main(){
     }
 
 }
- func router(conn net.Conn){
+ func router(corps httpd.Httpp){
+    switch corps.Path{
+    case "/shutdown":
+        shutdown()
+    case "/lock":
+        lock()
+    case "/url":
+        url(corps)
+    case "/health":
+        health()
+    default:
+        fmt.Println("How did u get here")
+    }
+ }
 
+ func shutdown(){
+  fmt.Println("Shutdown")  
+ }
+
+ func lock(){
+  fmt.Println("Lock")  
+ }
+
+ func url(corps httpd.Httpp){
+  fmt.Println("Url")  
+  fmt.Println("Body")
+ }
+
+ func health(){
+  fmt.Println("Health")  
  }
 
  func parser(conn net.Conn){
@@ -56,13 +84,29 @@ func main(){
     path := requestLine[1]
     switch path{
         case "/shutdown":   
-            fmt.Println("shutdown")
+            corps := httpd.Httpp{
+                Path: "/shutdown",
+                Body: "",
+            }
+            router(corps)
         case "/lock":
-            fmt.Println("lock")
+            corps := httpd.Httpp{
+                Path: "/lock",
+                Body: "",
+            }
+            router(corps)
         case "/url":
-            fmt.Println("url")
+            corps := httpd.Httpp{
+                Path: "/url",
+                Body: "",
+            }
+            router(corps)
         case "/health":
-            fmt.Println("health")
+            corps := httpd.Httpp{
+                Path: "/health",
+                Body: "",
+            }
+            router(corps)
         default:
             fmt.Println("tf u going?")
 
