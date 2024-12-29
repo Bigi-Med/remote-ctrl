@@ -67,8 +67,19 @@ func lock(){
 }
 
 func url(corps httpd.Httpp){
-    fmt.Println("Url")  
-    fmt.Println(corps.Body)
+    fmt.Println("Opening url on Firefox...")  
+    comd := "firefox"
+    fmt.Printf("hard length: %d \n", len("youtube.com"))
+    fmt.Printf("url length: %d \n", len(corps.Body))
+    arg1 := strings.TrimSpace(corps.Body)
+
+    cmd := exec.Command(comd,arg1)
+
+    _, stderr := cmd.Output()
+
+    if stderr != nil{
+        fmt.Println(stderr)
+    }
 }
 
 func health(){
