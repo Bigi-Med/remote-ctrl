@@ -95,6 +95,7 @@ func parser(conn net.Conn){
     for i := 0 ; i<len(slotedData); i++{
         if strings.TrimSpace(slotedData[i]) == ""{
             body = slotedData[i+1]
+            body = body[0:11]
         }
     }
     requestLine := strings.Split(slotedData[0]," ")
