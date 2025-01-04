@@ -7,6 +7,7 @@ import (
     "os/exec"
     "strings"
     "remote/httpd"
+    "strconv"
 )
 
 func main(){
@@ -69,8 +70,6 @@ func lock(){
 func url(corps httpd.Httpp){
     fmt.Println("Opening url on Firefox...")  
     comd := "firefox"
-    fmt.Printf("hard length: %d \n", len("youtube.com"))
-    fmt.Printf("url length: %d \n", len(corps.Body))
     arg1 := strings.TrimSpace(corps.Body)
 
     cmd := exec.Command(comd,arg1)
@@ -86,19 +85,41 @@ func health(){
     fmt.Println("Health")  
 }
 
+func parseHeaders(headers []string, headerKey string) string{
+    for i := 0 ; i<len(headers) ; i++ {
+        header := strings.Split(headers[i],":");
+        if header[0] == headerKey {
+            return strings.TrimSpace(header[1]);
+        }
+
+    }
+    return "";
+}
+
 func parser(conn net.Conn){
     data := make([]byte,1024)
     var body string ;
+    var headers []string;
+    var requestLine []string;
     conn.Read(data)
     dataStr := string(data)
     slotedData := strings.Split(dataStr,"\r\n")
+    requestLine = strings.Split(slotedData[0]," ")
     for i := 0 ; i<len(slotedData); i++{
         if strings.TrimSpace(slotedData[i]) == ""{
             body = slotedData[i+1]
-            body = body[0:11]
+            break;
+        }
+        if i != 0 {
+            headers = append(headers, string(slotedData[i]))   
         }
     }
-    requestLine := strings.Split(slotedData[0]," ")
+    contentLength, err := strconv.Atoi(parseHeaders(headers,"Content-Length"));
+    if err != nil {
+     fmt.Println("Content-Length not set correctly");
+    }
+    fmt.Println(contentLength)
+    body = body[0:contentLength]
     path := requestLine[1]
     switch path{
         case "/shutdown":   
